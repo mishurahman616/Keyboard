@@ -1,0 +1,5 @@
+hello,120
+keyboard,70
+android,60
+swift,20
+predict,30
