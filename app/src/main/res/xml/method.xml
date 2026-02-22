@@ -1,0 +1,17 @@
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:isDefault="false"
+    android:settingsActivity=""
+    android:supportsSwitchingToNextInputMethod="true">
+    <subtype
+        android:imeSubtypeLocale="en_US"
+        android:imeSubtypeMode="keyboard"
+        android:label="English" />
+    <subtype
+        android:imeSubtypeLocale="bn_BD"
+        android:imeSubtypeMode="keyboard"
+        android:label="Bangla (Phonetic)" />
+    <subtype
+        android:imeSubtypeLocale="bn_BD"
+        android:imeSubtypeMode="keyboard"
+        android:label="Bangla (Probhat)" />
+</input-method>
