@@ -1,47 +1,168 @@
 package com.keyboard.languages
 
+/**
+ * Bangla Phonetic Transliteration Engine
+ *
+ * Converts Romanized input to Bangla script using rule-based transliteration.
+ * Features:
+ * - Comprehensive conjunct consonant support
+ * - Automatic vowel sign attachment
+ * - Reph initiation for 'r' combinations
+ * - Inherent vowel support (o) to prevent unwanted conjuncts
+ */
 class BanglaPhoneticEngine {
+
+    /**
+     * Phonetic rules in priority order (longer matches first).
+     * Matches are case-sensitive to allow distinction where needed (e.g., t vs T).
+     */
     private val orderedRules = listOf(
-        "ksh" to "ক্ষ", "ngk" to "ঙ্ক", "ng" to "ং",
-        "chh" to "ছ", "kh" to "খ", "gh" to "ঘ", "th" to "থ", "dh" to "ধ", "ph" to "ফ", "bh" to "ভ", "sh" to "শ",
-        "rr" to "ড়", "rh" to "ঢ়",
-        "a" to "অ", "i" to "ই", "ii" to "ঈ", "u" to "উ", "uu" to "ঊ", "e" to "এ", "oi" to "ঐ", "o" to "ও", "ou" to "ঔ",
-        "k" to "ক", "g" to "গ", "c" to "চ", "j" to "জ", "t" to "ত", "d" to "দ", "n" to "ন", "p" to "প", "b" to "ব", "m" to "ম", "r" to "র", "l" to "ল", "s" to "স", "h" to "হ", "y" to "য়"
+        // === Three-letter conjuncts ===
+        "ksh" to "ক্ষ", "Ksh" to "ক্ষ", "KSH" to "ক্ষ",
+        "ngk" to "ঙ্ক", "NGK" to "ঙ্ক",
+        "ngg" to "ঙ্গ", "NGG" to "ঙ্গ",
+        "ndh" to "ন্ধ", "NDH" to "ন্ধ",
+        "nth" to "ন্থ", "NTH" to "ন্থ",
+
+        // === Two-letter conjuncts/modifiers ===
+        "kh" to "খ", "Kh" to "খ", "KH" to "খ",
+        "gh" to "ঘ", "Gh" to "ঘ", "GH" to "ঘ",
+        "ch" to "চ", "Ch" to "চ", "CH" to "চ",
+        "chh" to "ছ", "Chh" to "ছ", "CHH" to "ছ",
+        "jh" to "ঝ", "Jh" to "ঝ", "JH" to "ঝ",
+        "th" to "ত", "Th" to "ঠ", "TH" to "ত",
+        "dh" to "দ", "Dh" to "ঢ", "DH" to "দ",
+        "ph" to "ফ", "Ph" to "ফ", "PH" to "ফ",
+        "bh" to "ভ", "Bh" to "ভ", "BH" to "ভ",
+        "sh" to "শ", "Sh" to "শ", "SH" to "শ",
+        "ss" to "ষ", "Ss" to "ষ", "SS" to "ষ",
+        "ng" to "ঙ", "Ng" to "ঙ", "NG" to "ঙ",
+        "rr" to "ড়", "Rr" to "ড়", "RR" to "ড়",
+        "rh" to "ঢ়", "Rh" to "ঢ়", "RH" to "ঢ়",
+
+        // === Vowels (standalone) ===
+        "aa" to "আ", "AA" to "আ",
+        "ii" to "ঈ", "II" to "ঈ",
+        "uu" to "ঊ", "UU" to "ঊ",
+        "oi" to "ঐ", "OI" to "ঐ",
+        "ou" to "ঔ", "OU" to "ঔ",
+        "au" to "ঔ", "AU" to "ঔ",
+        "a" to "আ", "A" to "আ",
+        "i" to "ই", "I" to "ই",
+        "u" to "উ", "U" to "উ",
+        "e" to "এ", "E" to "এ",
+        "o" to "ও", "O" to "অ",
+
+        // === Consonants (single) ===
+        "k" to "ক", "K" to "ক",
+        "g" to "গ", "G" to "গ",
+        "c" to "চ", "C" to "চ",
+        "j" to "জ", "J" to "জ",
+        "t" to "ত", "T" to "ট",
+        "d" to "দ", "D" to "ড",
+        "n" to "ন", "N" to "ণ",
+        "p" to "প", "P" to "প",
+        "b" to "ব", "B" to "ব",
+        "m" to "ম", "M" to "ম",
+        "y" to "য়", "Y" to "য়",
+        "r" to "র", "R" to "ড়",
+        "l" to "ল", "L" to "ল",
+        "s" to "স", "S" to "ষ",
+        "h" to "হ", "H" to "হ",
+        "f" to "ফ", "F" to "ফ",
+        "v" to "ভ", "V" to "ভ",
+        "z" to "য", "Z" to "য",
+        "w" to "ওয়", "W" to "ওয়"
     )
 
+    /**
+     * Vowel signs (kar) that attach to consonants
+     */
     private val vowelSigns = mapOf(
-        "a" to "া", "i" to "ি", "ii" to "ী", "u" to "ু", "uu" to "ূ", "e" to "ে", "oi" to "ৈ", "o" to "ো", "ou" to "ৌ"
+        "a" to "া", "A" to "া",
+        "i" to "ি", "I" to "ি",
+        "ii" to "ী", "II" to "ী",
+        "u" to "ু", "U" to "ু",
+        "uu" to "ূ", "UU" to "ূ",
+        "e" to "ে", "E" to "ে",
+        "o" to "",     // inherent vowel (breaks conjunct cluster)
+        "O" to "ো",    // o-kar
+        "oi" to "ৈ", "OI" to "ৈ",
+        "ou" to "ৌ", "OU" to "ৌ"
     )
 
+    /**
+     * Consonants that form yantara (্য) combinations
+     */
+    private val yantaraConsonants = setOf(
+        "k", "K", "kh", "Kh", "KH", "g", "G", "gh", "Gh", "GH", "c", "C", "ch", "Ch", "CH", "chh", "Chh", "CHH", "j", "J", "jh", "Jh", "JH",
+        "t", "T", "th", "Th", "TH", "d", "D", "dh", "Dh", "DH", "n", "N", "p", "P", "ph", "Ph", "PH", "b", "B", "bh", "Bh", "BH",
+        "m", "M", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H", "ksh", "Ksh", "KSH", "rr", "Rr", "RR", "rh", "Rh", "RH", "R"
+    )
+
+    /**
+     * Main transliteration function
+     */
     fun transliterate(input: String): String {
-        val tokens = parseTokens(input.lowercase())
+        if (input.isBlank()) return ""
+
+        val tokens = parseTokens(input)
         val out = StringBuilder()
 
         for ((index, token) in tokens.withIndex()) {
             val prev = tokens.getOrNull(index - 1)
+            val next = tokens.getOrNull(index + 1)
+
             when {
-                token == "r" && tokens.getOrNull(index + 1)?.firstOrNull()?.isLetter() == true && prev?.isConsonantToken() == false -> {
-                    out.append("র্") // Reph initiation
+                // Handle reph initiation (র্) when 'r' is followed by consonant
+                token == "r" && shouldInitiateReph(next, prev) -> {
+                    out.append("র্")
                 }
-                token in vowelSigns && prev?.isConsonantToken() == true -> out.append(vowelSigns.getValue(token))
+
+                // Handle yantara (্য) for 'y' after consonant
+                token == "y" && prev?.isConsonantToken() == true && prev in yantaraConsonants -> {
+                    out.append("্য")
+                }
+
+                // Handle antasta ya (য়) - standalone 'y'
+                token == "y" -> {
+                    out.append("য়")
+                }
+
+                // Vowel signs attach to previous consonant
+                token in vowelSigns && prev?.isConsonantToken() == true -> {
+                    out.append(vowelSigns.getValue(token))
+                }
+
+                // Double consonant (and not a vowel sign like 'o') - insert halant
                 token.isConsonantToken() && prev?.isConsonantToken() == true -> {
                     out.append("্")
                     out.append(resolve(token))
                 }
+
+                // Default: resolve token to Bangla
                 else -> out.append(resolve(token))
             }
         }
+
         return out.toString()
+    }
+
+    private fun shouldInitiateReph(next: String?, prev: String?): Boolean {
+        if (next?.isConsonantToken() != true) return false
+        return prev == null || !prev.isConsonantToken()
     }
 
     private fun parseTokens(raw: String): List<String> {
         val tokens = mutableListOf<String>()
         var cursor = 0
+
         while (cursor < raw.length) {
             val match = orderedRules
                 .map { it.first }
                 .filter { raw.startsWith(it, cursor) }
                 .maxByOrNull { it.length }
+
             if (match != null) {
                 tokens += match
                 cursor += match.length
@@ -50,12 +171,26 @@ class BanglaPhoneticEngine {
                 cursor++
             }
         }
+
         return tokens
     }
 
-    private fun resolve(token: String): String = orderedRules.firstOrNull { it.first == token }?.second ?: token
+    private fun resolve(token: String): String {
+        return orderedRules.firstOrNull { it.first == token }?.second ?: token
+    }
 
-    private fun String.isConsonantToken(): Boolean = this in setOf(
-        "k", "kh", "g", "gh", "c", "chh", "j", "t", "th", "d", "dh", "n", "p", "ph", "b", "bh", "m", "r", "l", "sh", "s", "h", "y", "ksh"
-    )
+    private fun String.isConsonantToken(): Boolean {
+        return this in CONSONANT_TOKENS
+    }
+
+    companion object {
+        private val CONSONANT_TOKENS = setOf(
+            "k", "K", "kh", "Kh", "KH", "g", "G", "gh", "Gh", "GH", "ng", "Ng", "NG",
+            "c", "C", "ch", "Ch", "CH", "chh", "Chh", "CHH", "j", "J", "jh", "Jh", "JH",
+            "t", "T", "th", "Th", "TH", "d", "D", "dh", "Dh", "DH", "n", "N",
+            "p", "P", "ph", "Ph", "PH", "b", "B", "bh", "Bh", "BH", "m", "M",
+            "y", "Y", "r", "R", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H",
+            "f", "F", "v", "V", "z", "Z", "w", "W", "ksh", "Ksh", "KSH"
+        )
+    }
 }
