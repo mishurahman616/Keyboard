@@ -1,6 +1,6 @@
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
     android:isDefault="false"
-    android:settingsActivity=""
+    android:settingsActivity="com.keyboard.ui.MainActivity"
     android:supportsSwitchingToNextInputMethod="true">
     <subtype
         android:imeSubtypeLocale="en_US"
