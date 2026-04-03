@@ -43,8 +43,8 @@ class BanglaLayoutEngine {
         ']' to "ো",         '}' to "ৌ",
 
         // Row 3: Home row
-        'a' to "ৃ",         'A' to "ৄ",
-        's' to "ূ",         'S' to "ৗ",
+        'a' to "ু",         'A' to "ূ",
+        's' to "ৃ",         'S' to "ষ",
         'd' to "ি",         'D' to "ী",
         'f' to "া",         'F' to "অ",
         'g' to "্",         'G' to "্",

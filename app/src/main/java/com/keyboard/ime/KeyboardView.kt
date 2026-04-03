@@ -58,12 +58,24 @@ class KeyboardView @JvmOverloads constructor(
         R.id.key_q to "ঙ", R.id.key_w to "য", R.id.key_e to "ড",
         R.id.key_r to "প", R.id.key_t to "ট", R.id.key_y to "চ",
         R.id.key_u to "জ", R.id.key_i to "হ", R.id.key_o to "গ",
-        R.id.key_p to "ড়", R.id.key_a to "ৃ", R.id.key_s to "ূ",
+        R.id.key_p to "ড়", R.id.key_a to "ু", R.id.key_s to "ৃ",
         R.id.key_d to "ি", R.id.key_f to "া", R.id.key_g to "্",
         R.id.key_h to "ব", R.id.key_j to "ক", R.id.key_k to "ত",
         R.id.key_l to "দ", R.id.key_z to "ো", R.id.key_x to "ে",
-        R.id.key_c to "অ", R.id.key_v to "ভ", R.id.key_b to "ন",
+        R.id.key_c to "অ", R.id.key_v to "র", R.id.key_b to "ন",
         R.id.key_n to "ম", R.id.key_m to "স"
+    )
+
+    private val banglaLayoutShiftedKeys = mapOf(
+        R.id.key_q to "ঙ", R.id.key_w to "য", R.id.key_e to "ঢ",
+        R.id.key_r to "ফ", R.id.key_t to "ঠ", R.id.key_y to "ছ",
+        R.id.key_u to "ঝ", R.id.key_i to "ঞ", R.id.key_o to "ঘ",
+        R.id.key_p to "ঢ়", R.id.key_a to "ূ", R.id.key_s to "ষ",
+        R.id.key_d to "ী", R.id.key_f to "অ", R.id.key_g to "্",
+        R.id.key_h to "ভ", R.id.key_j to "খ", R.id.key_k to "থ",
+        R.id.key_l to "ধ", R.id.key_z to "ৌ", R.id.key_x to "ৈ",
+        R.id.key_c to "আ", R.id.key_v to "ভ", R.id.key_b to "ণ",
+        R.id.key_n to "ঙ", R.id.key_m to "শ"
     )
 
     init {
@@ -171,12 +183,14 @@ class KeyboardView @JvmOverloads constructor(
     private fun updateKeyLabels() {
         val mapping = when {
             isSymbolsMode -> symbolsKeys
-            currentLanguage == LanguageMode.BANGLA_LAYOUT -> banglaLayoutKeys
+            currentLanguage == LanguageMode.BANGLA_LAYOUT -> {
+                if (isShifted) banglaLayoutShiftedKeys else banglaLayoutKeys
+            }
             else -> qwertyKeys
         }
 
         for ((id, char) in mapping) {
-            keyButtons[id]?.text = if (!isSymbolsMode && isShifted && currentLanguage == LanguageMode.ENGLISH) {
+            keyButtons[id]?.text = if (!isSymbolsMode && isShifted && currentLanguage != LanguageMode.BANGLA_LAYOUT) {
                 char.uppercase()
             } else {
                 char
