@@ -9,4 +9,6 @@ sealed class KeyAction {
     data object LanguageSwitch : KeyAction()
     data object Symbols : KeyAction()
     data object Tutorial : KeyAction()
+    data object Copy : KeyAction()
+    data object Paste : KeyAction()
 }

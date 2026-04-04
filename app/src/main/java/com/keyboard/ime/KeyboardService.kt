@@ -169,6 +169,32 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
             KeyAction.LanguageSwitch -> handleLanguageSwitch()
             KeyAction.Symbols -> handleSymbolsToggle()
             KeyAction.Tutorial -> handleTutorial()
+            KeyAction.Copy -> handleCopy(ic)
+            KeyAction.Paste -> handlePaste(ic)
+        }
+    }
+
+    private fun handleCopy(ic: InputConnection) {
+        val selected = ic.getSelectedText(0)
+        if (selected != null && selected.isNotEmpty()) {
+            val clipboard = getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clip = android.content.ClipData.newPlainText("Keyboard Copy", selected)
+            clipboard.setPrimaryClip(clip)
+            android.widget.Toast.makeText(this, "Copied to clipboard", android.widget.Toast.LENGTH_SHORT).show()
+        } else {
+            // If no text is selected, some users expect a "Select All" behavior or a hint
+            android.widget.Toast.makeText(this, "Select text first to copy", android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun handlePaste(ic: InputConnection) {
+        val clipboard = getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        val clip = clipboard.primaryClip
+        if (clip != null && clip.itemCount > 0) {
+            val textToPaste = clip.getItemAt(0).text
+            if (textToPaste != null) {
+                ic.commitText(textToPaste, 1)
+            }
         }
     }
 

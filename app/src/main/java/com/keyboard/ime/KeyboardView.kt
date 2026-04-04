@@ -2,7 +2,10 @@ package com.keyboard.ime
 
 import android.content.Context
 import android.util.AttributeSet
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,6 +25,8 @@ class KeyboardView @JvmOverloads constructor(
     private var isShifted = false
     private var isSymbolsMode = false
     private var currentLanguage = LanguageMode.ENGLISH
+    private val handler = Handler(Looper.getMainLooper())
+    private var backspaceRunnable: Runnable? = null
 
     private val qwertyKeys = mapOf(
         R.id.key_q to "q", R.id.key_w to "w", R.id.key_e to "e",
@@ -149,8 +154,20 @@ class KeyboardView @JvmOverloads constructor(
             dispatchKey(KeyAction.Shift)
         }
 
-        findViewById<Button>(R.id.key_backspace)?.setOnClickListener {
-            dispatchKey(KeyAction.Backspace)
+        findViewById<Button>(R.id.key_backspace)?.let { button ->
+            button.setOnClickListener {
+                dispatchKey(KeyAction.Backspace)
+            }
+            button.setOnLongClickListener {
+                startBackspaceRepeating()
+                true
+            }
+            button.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+                    stopBackspaceRepeating()
+                }
+                false
+            }
         }
 
         findViewById<Button>(R.id.key_space)?.setOnClickListener {
@@ -181,6 +198,14 @@ class KeyboardView @JvmOverloads constructor(
 
         findViewById<Button>(R.id.key_period)?.setOnClickListener {
             dispatchKey(KeyAction.Character("."))
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.key_copy)?.setOnClickListener {
+            dispatchKey(KeyAction.Copy)
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.key_paste)?.setOnClickListener {
+            dispatchKey(KeyAction.Paste)
         }
 
         updateKeyLabels()
@@ -237,5 +262,22 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun dispatchKey(action: KeyAction) {
         onKeyListener?.invoke(action)
+    }
+
+    private fun startBackspaceRepeating() {
+        backspaceRunnable = object : Runnable {
+            override fun run() {
+                dispatchKey(KeyAction.Backspace)
+                handler.postDelayed(this, 50)
+            }
+        }
+        handler.post(backspaceRunnable!!)
+    }
+
+    private fun stopBackspaceRepeating() {
+        backspaceRunnable?.let {
+            handler.removeCallbacks(it)
+            backspaceRunnable = null
+        }
     }
 }

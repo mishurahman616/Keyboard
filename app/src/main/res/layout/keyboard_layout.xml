@@ -7,14 +7,46 @@
     android:orientation="vertical"
     android:padding="4dp">
 
-    <!-- Suggestions row -->
-    <com.keyboard.ui.CandidateView
-        android:id="@+id/candidate_view"
+    <!-- Toolbar/Suggestions row -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:background="#121212" />
+        android:background="#121212"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/key_copy"
+            style="@style/KeyboardKey.Function"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_copy"
+            android:scaleType="centerInside"
+            android:padding="12dp"
+            android:background="?android:attr/selectableItemBackground" />
+
+        <ImageButton
+            android:id="@+id/key_paste"
+            style="@style/KeyboardKey.Function"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_paste"
+            android:scaleType="centerInside"
+            android:padding="12dp"
+            android:background="?android:attr/selectableItemBackground" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:background="#444444" />
+
+        <com.keyboard.ui.CandidateView
+            android:id="@+id/candidate_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+    </LinearLayout>
 
     <!-- Number row -->
     <LinearLayout
