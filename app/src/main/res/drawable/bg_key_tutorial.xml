@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#4DFFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#333333" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    <item
+        android:bottom="4dp"
+        android:right="4dp">
+        <bitmap
+            android:src="@android:drawable/ic_menu_agenda"
+            android:gravity="bottom|right"
+            android:alpha="0.3" />
+    </item>
+</ripple>

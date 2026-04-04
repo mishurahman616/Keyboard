@@ -265,6 +265,7 @@
             style="@style/KeyboardKey"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:background="@drawable/bg_key_tutorial"
             android:text="," />
 
         <Button
