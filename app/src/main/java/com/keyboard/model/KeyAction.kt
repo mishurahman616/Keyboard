@@ -11,4 +11,5 @@ sealed class KeyAction {
     data object Tutorial : KeyAction()
     data object Copy : KeyAction()
     data object Paste : KeyAction()
+    data object Emoji : KeyAction()
 }

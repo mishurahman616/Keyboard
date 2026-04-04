@@ -169,6 +169,7 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
             KeyAction.LanguageSwitch -> handleLanguageSwitch()
             KeyAction.Symbols -> handleSymbolsToggle()
             KeyAction.Tutorial -> handleTutorial()
+            KeyAction.Emoji -> handleEmojiToggle()
             KeyAction.Copy -> handleCopy(ic)
             KeyAction.Paste -> handlePaste(ic)
         }
@@ -202,6 +203,10 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
         val intent = Intent(this, com.keyboard.ui.MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    private fun handleEmojiToggle() {
+        // Emoji toggle logic is now handled in KeyboardView to show/hide the emoji picker.
     }
 
     private fun handleCharacterInput(ic: InputConnection, rawChar: String) {
@@ -308,12 +313,35 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
                 applyTransliterationDiff(ic, newTransliteration)
                 requestSuggestions()
             } else {
-                ic.deleteSurroundingText(1, 0)
+                deleteLastCharProperly(ic)
                 requestSuggestions()
             }
         } else {
-            ic.deleteSurroundingText(1, 0)
+            deleteLastCharProperly(ic)
         }
+    }
+
+    /**
+     * Properly deletes the last character, handling multi-byte characters (emojis)
+     * by detecting surrogate pairs and supplementary characters.
+     */
+    private fun deleteLastCharProperly(ic: InputConnection) {
+        // Get text before cursor to check what we're deleting
+        val before = ic.getTextBeforeCursor(2, 0) ?: return
+
+        if (before.isEmpty()) return
+
+        // Check if the last character is a supplementary character (emoji)
+        // Emojis are typically in the range U+10000 and above, encoded as surrogate pairs
+        val lastChar = before.last()
+        val charsToDelete = if (lastChar.isLowSurrogate() && before.length > 1) {
+            // This is the second half of a surrogate pair (emoji), delete both
+            2
+        } else {
+            1
+        }
+
+        ic.deleteSurroundingText(charsToDelete, 0)
     }
 
     private fun handleSpace(ic: InputConnection) {

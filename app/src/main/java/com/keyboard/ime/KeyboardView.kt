@@ -6,9 +6,13 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.keyboard.R
 import com.keyboard.model.KeyAction
 import com.keyboard.model.LanguageMode
@@ -25,7 +29,111 @@ class KeyboardView @JvmOverloads constructor(
     private var isShifted = false
     private var isSymbolsMode = false
     private var currentLanguage = LanguageMode.ENGLISH
+    private var isEmojiMode = false
     private val handler = Handler(Looper.getMainLooper())
+
+    data class EmojiData(val emoji: String, val description: String, val usage: String)
+
+    private val emojiList = listOf(
+        EmojiData("😀", "Grinning face", "Use when happy or friendly"),
+        EmojiData("😃", "Smiling face with big eyes", "Use when genuinely happy"),
+        EmojiData("😄", "Smiling face with smiling eyes", "Use when very happy"),
+        EmojiData("😁", "Beaming face with smiling eyes", "Use when excited and happy"),
+        EmojiData("😆", "Grinning squinting face", "Use when laughing hard"),
+        EmojiData("😅", "Grinning face with sweat", "Use when relieved or nervous"),
+        EmojiData("😂", "Face with tears of joy", "Use when something is hilarious"),
+        EmojiData("🤣", "Rolling on the floor laughing", "Use when extremely funny"),
+        EmojiData("😊", "Smiling face with smiling eyes", "Use when pleased or content"),
+        EmojiData("😇", "Smiling face with halo", "Use when being innocent or good"),
+        EmojiData("🙂", "Slightly smiling face", "Use for polite acknowledgment"),
+        EmojiData("🙃", "Upside-down face", "Use when being sarcastic or silly"),
+        EmojiData("😉", "Winking face", "Use when joking or flirting"),
+        EmojiData("😌", "Relieved face", "Use when relaxed or thankful"),
+        EmojiData("😍", "Smiling face with heart-eyes", "Use when you love something"),
+        EmojiData("🥰", "Smiling face with hearts", "Use when feeling loved"),
+        EmojiData("😘", "Face blowing a kiss", "Use to send affection"),
+        EmojiData("😗", "Kissing face", "Use when showing affection"),
+        EmojiData("😙", "Kissing face with smiling eyes", "Use when happily affectionate"),
+        EmojiData("😚", "Kissing face with closed eyes", "Use when sweetly affectionate"),
+        EmojiData("😋", "Face savoring food", "Use when food is delicious"),
+        EmojiData("😛", "Face with tongue", "Use when being playful"),
+        EmojiData("😝", "Squinting face with tongue", "Use when being silly"),
+        EmojiData("😜", "Winking face with tongue", "Use when joking around"),
+        EmojiData("🤪", "Zany face", "Use when being crazy or wild"),
+        EmojiData("🤨", "Face with raised eyebrow", "Use when skeptical"),
+        EmojiData("🧐", "Face with monocle", "Use when examining closely"),
+        EmojiData("🤓", "Nerd face", "Use when being geeky or studious"),
+        EmojiData("😎", "Smiling face with sunglasses", "Use when being cool or confident"),
+        EmojiData("🤩", "Star-struck", "Use when amazed by someone"),
+        EmojiData("🥳", "Partying face", "Use when celebrating"),
+        EmojiData("😏", "Smirking face", "Use when being suggestive"),
+        EmojiData("😒", "Unamused face", "Use when unimpressed"),
+        EmojiData("😞", "Disappointed face", "Use when let down"),
+        EmojiData("😔", "Pensive face", "Use when thinking deeply"),
+        EmojiData("😟", "Worried face", "Use when concerned"),
+        EmojiData("😕", "Confused face", "Use when puzzled"),
+        EmojiData("🙁", "Slightly frowning face", "Use when sad"),
+        EmojiData("☹️", "Frowning face", "Use when unhappy"),
+        EmojiData("😣", "Persevering face", "Use when struggling"),
+        EmojiData("😖", "Confounded face", "Use when frustrated"),
+        EmojiData("😫", "Tired face", "Use when exhausted"),
+        EmojiData("😩", "Weary face", "Use when overwhelmed"),
+        EmojiData("🥺", "Pleading face", "Use when begging or cute"),
+        EmojiData("😢", "Crying face", "Use when sad"),
+        EmojiData("😭", "Loudly crying face", "Use when very sad or laughing"),
+        EmojiData("😤", "Face with steam from nose", "Use when annoyed"),
+        EmojiData("😠", "Angry face", "Use when mad"),
+        EmojiData("😡", "Pouting face", "Use when very angry"),
+        EmojiData("🤬", "Face with symbols on mouth", "Use when furious"),
+        EmojiData("🤯", "Exploding head", "Use when mind blown"),
+        EmojiData("😳", "Flushed face", "Use when embarrassed"),
+        EmojiData("🥵", "Hot face", "Use when too hot"),
+        EmojiData("🥶", "Cold face", "Use when freezing"),
+        EmojiData("😱", "Face screaming in fear", "Use when shocked"),
+        EmojiData("😨", "Fearful face", "Use when scared"),
+        EmojiData("😰", "Anxious face with sweat", "Use when worried"),
+        EmojiData("😥", "Sad but relieved face", "Use when worried but okay"),
+        EmojiData("😓", "Downcast face with sweat", "Use when stressed"),
+        EmojiData("🤗", "Smiling face with open hands", "Use when hugging"),
+        EmojiData("🤔", "Thinking face", "Use when pondering"),
+        EmojiData("🤭", "Face with hand over mouth", "Use when surprised or giggling"),
+        EmojiData("🤫", "Shushing face", "Use when asking for quiet"),
+        EmojiData("🤥", "Lying face", "Use when being dishonest"),
+        EmojiData("😶", "Face without mouth", "Use when speechless"),
+        EmojiData("😐", "Neutral face", "Use when indifferent"),
+        EmojiData("😑", "Expressionless face", "Use when annoyed"),
+        EmojiData("😬", "Grimacing face", "Use when awkward"),
+        EmojiData("🙄", "Face with rolling eyes", "Use when annoyed"),
+        EmojiData("😯", "Hushed face", "Use when surprised"),
+        EmojiData("😦", "Frowning face with open mouth", "Use when shocked"),
+        EmojiData("😧", "Anguished face", "Use when in pain"),
+        EmojiData("😮", "Face with open mouth", "Use when surprised"),
+        EmojiData("😲", "Astonished face", "Use when amazed"),
+        EmojiData("🥱", "Yawning face", "Use when tired or bored"),
+        EmojiData("😴", "Sleeping face", "Use when sleepy"),
+        EmojiData("🤤", "Drooling face", "Use when desiring something"),
+        EmojiData("😪", "Sleepy face", "Use when drowsy"),
+        EmojiData("😵", "Knocked-out face", "Use when dizzy"),
+        EmojiData("🤐", "Zipper-mouth face", "Use when keeping secret"),
+        EmojiData("🥴", "Woozy face", "Use when intoxicated"),
+        EmojiData("🤢", "Nauseated face", "Use when sick"),
+        EmojiData("🤮", "Face vomiting", "Use when disgusted"),
+        EmojiData("🤧", "Sneezing face", "Use when sick"),
+        EmojiData("😷", "Face with medical mask", "Use when sick or precautions"),
+        EmojiData("🤒", "Face with thermometer", "Use when ill"),
+        EmojiData("🤕", "Face with head-bandage", "Use when injured"),
+        EmojiData("🤑", "Money-mouth face", "Use about wealth"),
+        EmojiData("🤠", "Cowboy hat face", "Use when adventurous"),
+        EmojiData("😈", "Smiling face with horns", "Use when mischievous"),
+        EmojiData("👿", "Angry face with horns", "Use when evil or angry"),
+        EmojiData("👹", "Ogre", "Use when monstrous"),
+        EmojiData("👺", "Goblin", "Use when tricky"),
+        EmojiData("🤡", "Clown face", "Use when silly"),
+        EmojiData("💩", "Pile of poo", "Use when joking or silly"),
+        EmojiData("👻", "Ghost", "Use for spooky fun"),
+        EmojiData("💀", "Skull", "Use when dead or laughing hard"),
+        EmojiData("☠️", "Skull and crossbones", "Use for danger or poison")
+    )
     private var backspaceRunnable: Runnable? = null
 
     private val qwertyKeys = mapOf(
@@ -135,6 +243,34 @@ class KeyboardView @JvmOverloads constructor(
                 button.setOnClickListener {
                     dispatchKey(KeyAction.Character(button.text.toString()))
                 }
+            }
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.key_paste)?.setOnClickListener {
+            dispatchKey(KeyAction.Paste)
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.key_emoji)?.setOnClickListener {
+            toggleEmojiMode()
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.btn_close_emoji)?.setOnClickListener {
+            if (isEmojiMode) toggleEmojiMode()
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.btn_emoji_backspace)?.let { button ->
+            button.setOnClickListener {
+                dispatchKey(KeyAction.Backspace)
+            }
+            button.setOnLongClickListener {
+                startBackspaceRepeating()
+                true
+            }
+            button.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+                    stopBackspaceRepeating()
+                }
+                false
             }
         }
 
@@ -258,6 +394,71 @@ class KeyboardView @JvmOverloads constructor(
             LanguageMode.BANGLA_PHONETIC -> "বাংলা (Phonetic)"
             LanguageMode.BANGLA_LAYOUT -> "বাংলা (Layout)"
         }
+    }
+
+    private fun toggleEmojiMode() {
+        isEmojiMode = !isEmojiMode
+        val keyboardContainer = findViewById<LinearLayout>(R.id.keyboard_rows_container)
+        val emojiPicker = findViewById<LinearLayout>(R.id.emoji_picker_container)
+        val emojiRecycler = findViewById<RecyclerView>(R.id.emoji_recycler)
+        val emojiButton = findViewById<android.widget.ImageButton>(R.id.key_emoji)
+
+        if (isEmojiMode) {
+            keyboardContainer.visibility = View.GONE
+            emojiPicker.visibility = View.VISIBLE
+            emojiButton.setImageResource(R.drawable.ic_keyboard)
+            setupEmojiRecycler(emojiRecycler)
+        } else {
+            keyboardContainer.visibility = View.VISIBLE
+            emojiPicker.visibility = View.GONE
+            emojiButton.setImageResource(R.drawable.ic_emoji)
+        }
+    }
+
+    private fun setupEmojiRecycler(recyclerView: RecyclerView) {
+        recyclerView.layoutManager = GridLayoutManager(context, 7)
+        recyclerView.adapter = EmojiAdapter(emojiList) { emoji ->
+            dispatchKey(KeyAction.Character(emoji))
+        }
+    }
+
+    private class EmojiAdapter(
+        private val emojis: List<EmojiData>,
+        private val onClick: (String) -> Unit
+    ) : RecyclerView.Adapter<EmojiAdapter.ViewHolder>() {
+
+        class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val tv = TextView(parent.context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    parent.width / 7,
+                    150
+                )
+                gravity = android.view.Gravity.CENTER
+                textSize = 24f
+                val attrs = intArrayOf(android.R.attr.selectableItemBackground)
+                val typedArray = context.obtainStyledAttributes(attrs)
+                background = typedArray.getDrawable(0)
+                typedArray.recycle()
+                isClickable = true
+                isFocusable = true
+            }
+            return ViewHolder(tv)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val emojiData = emojis[position]
+            holder.textView.text = emojiData.emoji
+            holder.textView.setOnClickListener { onClick(emojiData.emoji) }
+            holder.textView.setOnLongClickListener {
+                val tooltipText = "${emojiData.description}\n${emojiData.usage}"
+                android.widget.Toast.makeText(holder.textView.context, tooltipText, android.widget.Toast.LENGTH_LONG).show()
+                true
+            }
+        }
+
+        override fun getItemCount() = emojis.size
     }
 
     private fun dispatchKey(action: KeyAction) {
