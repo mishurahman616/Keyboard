@@ -254,10 +254,6 @@ class KeyboardView @JvmOverloads constructor(
             toggleEmojiMode()
         }
 
-        findViewById<android.widget.ImageButton>(R.id.btn_close_emoji)?.setOnClickListener {
-            if (isEmojiMode) toggleEmojiMode()
-        }
-
         findViewById<android.widget.ImageButton>(R.id.btn_emoji_backspace)?.let { button ->
             button.setOnClickListener {
                 dispatchKey(KeyAction.Backspace)

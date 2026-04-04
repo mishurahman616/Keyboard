@@ -225,14 +225,9 @@
             android:gravity="center_vertical"
             android:padding="4dp">
 
-            <ImageButton
-                android:id="@+id/btn_emoji_backspace"
+            <View
                 android:layout_width="48dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_backspace"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:scaleType="centerInside" />
+                android:layout_height="40dp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -243,10 +238,10 @@
                 android:gravity="center" />
 
             <ImageButton
-                android:id="@+id/btn_close_emoji"
+                android:id="@+id/btn_emoji_backspace"
                 android:layout_width="48dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_close"
+                android:src="@drawable/ic_backspace"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:scaleType="centerInside" />
