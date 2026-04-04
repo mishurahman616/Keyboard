@@ -169,8 +169,14 @@ class KeyboardView @JvmOverloads constructor(
             dispatchKey(KeyAction.Symbols)
         }
 
-        findViewById<Button>(R.id.key_comma)?.setOnClickListener {
-            dispatchKey(KeyAction.Character(","))
+        findViewById<Button>(R.id.key_comma)?.let { button ->
+            button.setOnClickListener {
+                dispatchKey(KeyAction.Character(","))
+            }
+            button.setOnLongClickListener {
+                dispatchKey(KeyAction.Tutorial)
+                true
+            }
         }
 
         findViewById<Button>(R.id.key_period)?.setOnClickListener {

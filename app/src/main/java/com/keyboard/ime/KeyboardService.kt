@@ -2,6 +2,7 @@ package com.keyboard.ime
 
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
+import android.content.Intent
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -167,7 +168,14 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
             KeyAction.Shift -> handleShift()
             KeyAction.LanguageSwitch -> handleLanguageSwitch()
             KeyAction.Symbols -> handleSymbolsToggle()
+            KeyAction.Tutorial -> handleTutorial()
         }
+    }
+
+    private fun handleTutorial() {
+        val intent = Intent(this, com.keyboard.ui.MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
     private fun handleCharacterInput(ic: InputConnection, rawChar: String) {

@@ -250,30 +250,38 @@
             style="@style/KeyboardKey.Function"
             android:layout_width="48dp"
             android:text="\?123"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
 
         <Button
             android:id="@+id/key_language"
             style="@style/KeyboardKey.Function"
-            android:layout_width="44dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="🌐"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/key_comma"
             style="@style/KeyboardKey"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="," />
 
         <Button
             android:id="@+id/key_space"
             style="@style/KeyboardKey.Space"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text=" " />
 
         <Button
             android:id="@+id/key_period"
             style="@style/KeyboardKey"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="." />
 
         <Button

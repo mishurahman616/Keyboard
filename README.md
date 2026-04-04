@@ -21,6 +21,10 @@ Production-ready Android IME supporting English + Bangla (Phonetic & Probhat Lay
 - Dark theme with Material 3 design
 - Visual feedback on key press (ripple effects)
 - Dynamic language indicator on spacebar
+- Optimized bottom row for ergonomics:
+    - **Long-press comma (`,`)** to access the in-app tutorial.
+    - **Balanced widths**: Wide spacebar (weight 3) with standard-sized language, comma, and period keys (weight 1).
+    - **Clean single-line labels**: Spacebar text uses adaptive sizing to prevent wrapping in Bangla mode.
 - Symbol layer (?123) with brackets, currency, and special characters
 - Candidate suggestion bar with tap-to-complete
 

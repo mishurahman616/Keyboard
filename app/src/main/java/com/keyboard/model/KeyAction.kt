@@ -8,4 +8,5 @@ sealed class KeyAction {
     data object Shift : KeyAction()
     data object LanguageSwitch : KeyAction()
     data object Symbols : KeyAction()
+    data object Tutorial : KeyAction()
 }
