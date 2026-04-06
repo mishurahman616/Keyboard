@@ -236,6 +236,29 @@ See [UPGRADE_PLAN.md](UPGRADE_PLAN.md) for detailed roadmap.
 - [ ] Additional themes
 - [ ] Customizable key sizes
 
+## Suggestion & Prediction System
+
+The keyboard features a sophisticated, local-first suggestion system that combines static dictionaries with personal learning.
+
+### How it Works
+1. **Data Sources**:
+   - **Static Dictionaries**: Pre-loaded `english_sample.txt` and `bangla_sample.txt` (over 10,000 words).
+   - **User Learning**: A Room database (`DictionaryDatabase`) tracks words you type to learn your unique vocabulary.
+2. **The Trie (Prefix Tree)**: All words are indexed in a high-performance Trie structure, allowing for instantaneous $O(L)$ prefix lookups where $L$ is the word length.
+3. **Multi-Source Ranking**:
+   - **Prefix Matching**: Finds words starting with your current input (e.g., "ap" → "apple").
+   - **Next-Word Prediction**: Analyzes the previous word to suggest what you might type next (e.g., "Good" → "morning").
+   - **Frequency Scoring**: Results are ranked based on a combination of global language frequency and your personal usage patterns.
+4. **Bangla Phonetic Support**:
+   - The engine automatically transliterates your Romanized keystrokes (e.g., "am") into Bangla prefixes ("আম") *before* searching the dictionary.
+   - It "learns" the final Bangla word you select, not the phonetic keystrokes, ensuring your personal dictionary is clean and accurate.
+
+### Key Features
+- **Max 6 Suggestions**: The top 6 most relevant words are displayed in the scrollable suggestion bar.
+- **Auto-Learning**: Every time you finish a word or select a suggestion, the engine reinforces that word's score.
+- **Privacy-First**: No data is ever sent to the cloud; all learning and prediction happen strictly on your device.
+- **Performance**: Lookups are debounced and run on background coroutines to ensure typing remains lag-free.
+
 ## Testing
 
 Tested on:

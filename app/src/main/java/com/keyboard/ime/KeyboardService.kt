@@ -23,9 +23,11 @@ import com.keyboard.prediction.SuggestionEngine
 import com.keyboard.prediction.Trie
 import com.keyboard.theme.ThemeManager
 import com.keyboard.ui.CandidateView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Keyboard IME Service
@@ -78,6 +80,36 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
     private fun initializeEngine() {
         val db = DictionaryDatabase.instance(this)
         suggestionEngine = SuggestionEngine(trie, AutoCorrect(trie), db.wordDao())
+        
+        // Load initial dictionaries in background
+        lifecycleScope.launch(Dispatchers.IO) {
+            loadDictionary("dictionaries/english_sample.txt", "en")
+            loadDictionary("dictionaries/bangla_sample.txt", "bn")
+            
+            // Also load learned words from DB
+            val learnedWords = db.wordDao().getAll()
+            learnedWords.forEach { trie.insert(it.word, it.frequency) }
+            
+            android.util.Log.d("KeyboardService", "Dictionary loading complete")
+        }
+    }
+
+    private fun loadDictionary(assetPath: String, lang: String) {
+        try {
+            assets.open(assetPath).bufferedReader().useLines { lines ->
+                lines.forEach { line ->
+                    val parts = line.split(",")
+                    if (parts.size >= 2) {
+                        val word = parts[0].trim()
+                        val freq = parts[1].trim().toIntOrNull() ?: 1
+                        trie.insert(word, freq)
+                    }
+                }
+            }
+            android.util.Log.d("KeyboardService", "Loaded dictionary: $assetPath")
+        } catch (e: Exception) {
+            android.util.Log.e("KeyboardService", "Error loading dictionary $assetPath", e)
+        }
     }
 
     override fun onCreateInputView(): View {
@@ -213,11 +245,8 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
         val char = if (isShifted) rawChar.uppercase() else rawChar.lowercase()
         
         val translated = when (languageMode) {
-            LanguageMode.ENGLISH -> {
-                char
-            }
+            LanguageMode.ENGLISH -> char
             LanguageMode.BANGLA_PHONETIC -> {
-                // Build the new word
                 val newWord = currentWord.toString() + char
                 phoneticEngine.transliterate(newWord)
             }
@@ -230,30 +259,36 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
             }
         }
 
-        when (languageMode) {
-            LanguageMode.BANGLA_PHONETIC -> {
-                // Use diff-based update for smooth typing
+        if (isWordPart(translated)) {
+            if (languageMode == LanguageMode.BANGLA_PHONETIC) {
                 applyTransliterationDiff(ic, translated)
                 currentWord.append(char)
-                requestSuggestions()
-            }
-            else -> {
-                // Direct commit for English and Layout modes
+            } else {
                 ic.commitText(translated, 1)
-
-                if (char.all { it.isLetter() }) {
-                    currentWord.append(char)
-                    requestSuggestions()
-                } else {
-                    handleWordBreak()
-                }
+                currentWord.append(translated)
             }
+            requestSuggestions()
+        } else {
+            ic.commitText(translated, 1)
+            handleWordBreak()
+            resetInputState()
+            keyboardView?.updateCandidates(emptyList())
         }
 
         // Reset shift after typing (single-shift mode like mobile keyboards)
         if (isShifted && languageMode == LanguageMode.ENGLISH) {
             isShifted = false
             keyboardView?.setShifted(false)
+        }
+    }
+
+    private fun isWordPart(text: String): Boolean {
+        if (text.isEmpty()) return false
+        return text.all { c ->
+            val type = Character.getType(c).toByte()
+            c.isLetter() || 
+            type == Character.NON_SPACING_MARK || 
+            type == Character.COMBINING_SPACING_MARK
         }
     }
 
@@ -438,8 +473,14 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
         suggestionJob?.cancel()
         suggestionJob = lifecycleScope.launch {
             delay(50) // Small debounce for performance
-            val token = currentWord.toString()
-            if (token.length >= 1) {
+            
+            val token = if (languageMode == LanguageMode.BANGLA_PHONETIC) {
+                phoneticEngine.transliterate(currentWord.toString())
+            } else {
+                currentWord.toString()
+            }
+
+            if (token.isNotEmpty()) {
                 try {
                     val suggestions = suggestionEngine.suggest(
                         token,
@@ -457,7 +498,12 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
     }
 
     private fun learnCurrentWord() {
-        val word = currentWord.toString()
+        val word = if (languageMode == LanguageMode.BANGLA_PHONETIC) {
+            phoneticEngine.transliterate(currentWord.toString())
+        } else {
+            currentWord.toString()
+        }
+
         if (word.length >= 2) {
             lifecycleScope.launch {
                 try {

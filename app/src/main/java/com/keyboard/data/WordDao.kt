@@ -18,4 +18,7 @@ interface WordDao {
 
     @Query("SELECT * FROM words WHERE nextWordHint = :word ORDER BY frequency DESC LIMIT :limit")
     suspend fun getNextWordCandidates(word: String, limit: Int): List<WordEntity>
+
+    @Query("SELECT * FROM words")
+    suspend fun getAll(): List<WordEntity>
 }
