@@ -149,15 +149,27 @@ class KeyboardView @JvmOverloads constructor(
     )
 
     private val symbolsKeys = mapOf(
+        R.id.key_q to "@", R.id.key_w to "#", R.id.key_e to "$",
+        R.id.key_r to "%", R.id.key_t to "&", R.id.key_y to "-",
+        R.id.key_u to "+", R.id.key_i to "(", R.id.key_o to ")",
+        R.id.key_p to "/", R.id.key_a to "*", R.id.key_s to "\"",
+        R.id.key_d to "'", R.id.key_f to ":", R.id.key_g to ";",
+        R.id.key_h to "!", R.id.key_j to "?", R.id.key_k to ",",
+        R.id.key_l to ".", R.id.key_z to "_", R.id.key_x to "\\",
+        R.id.key_c to "|", R.id.key_v to "~", R.id.key_b to "<",
+        R.id.key_n to ">", R.id.key_m to "।"
+    )
+
+    private val symbolsKeysPage2 = mapOf(
         R.id.key_q to "[", R.id.key_w to "]", R.id.key_e to "{",
-        R.id.key_r to "}", R.id.key_t to "#", R.id.key_y to "%",
-        R.id.key_u to "^", R.id.key_i to "*", R.id.key_o to "+",
-        R.id.key_p to "=", R.id.key_a to "_", R.id.key_s to "\\",
-        R.id.key_d to "|", R.id.key_f to "~", R.id.key_g to "<",
-        R.id.key_h to ">", R.id.key_j to "$", R.id.key_k to "€",
-        R.id.key_l to "£", R.id.key_z to "•", R.id.key_x to "¶",
-        R.id.key_c to "÷", R.id.key_v to "×", R.id.key_b to "{",
-        R.id.key_n to "}", R.id.key_m to "!"
+        R.id.key_r to "}", R.id.key_t to "^", R.id.key_y to "=",
+        R.id.key_u to "°", R.id.key_i to "•", R.id.key_o to "○",
+        R.id.key_p to "●", R.id.key_a to "€", R.id.key_s to "£",
+        R.id.key_d to "¥", R.id.key_f to "₹", R.id.key_g to "¢",
+        R.id.key_h to "©", R.id.key_j to "®", R.id.key_k to "™",
+        R.id.key_l to "¶", R.id.key_z to "†", R.id.key_x to "‡",
+        R.id.key_c to "±", R.id.key_v to "÷", R.id.key_b to "×",
+        R.id.key_n to "√", R.id.key_m to "π"
     )
 
     private val banglaNumberKeys = mapOf(
@@ -168,26 +180,26 @@ class KeyboardView @JvmOverloads constructor(
     )
 
     private val banglaLayoutKeys = mapOf(
-        R.id.key_q to "ঙ", R.id.key_w to "য", R.id.key_e to "ড",
+        R.id.key_q to "ৎ", R.id.key_w to "য়", R.id.key_e to "ড",
         R.id.key_r to "প", R.id.key_t to "ট", R.id.key_y to "চ",
         R.id.key_u to "জ", R.id.key_i to "হ", R.id.key_o to "গ",
         R.id.key_p to "ড়", R.id.key_a to "ু", R.id.key_s to "ৃ",
         R.id.key_d to "ি", R.id.key_f to "া", R.id.key_g to "্",
         R.id.key_h to "ব", R.id.key_j to "ক", R.id.key_k to "ত",
-        R.id.key_l to "দ", R.id.key_z to "ো", R.id.key_x to "ে",
-        R.id.key_c to "অ", R.id.key_v to "র", R.id.key_b to "ন",
+        R.id.key_l to "দ", R.id.key_z to "ং", R.id.key_x to "ঃ",
+        R.id.key_c to "ে", R.id.key_v to "র", R.id.key_b to "ন",
         R.id.key_n to "ম", R.id.key_m to "স"
     )
 
     private val banglaLayoutShiftedKeys = mapOf(
-        R.id.key_q to "ঙ", R.id.key_w to "য", R.id.key_e to "ঢ",
+        R.id.key_q to "ঁ", R.id.key_w to "য", R.id.key_e to "ঢ",
         R.id.key_r to "ফ", R.id.key_t to "ঠ", R.id.key_y to "ছ",
         R.id.key_u to "ঝ", R.id.key_i to "ঞ", R.id.key_o to "ঘ",
         R.id.key_p to "ঢ়", R.id.key_a to "ূ", R.id.key_s to "ষ",
         R.id.key_d to "ী", R.id.key_f to "অ", R.id.key_g to "্",
         R.id.key_h to "ভ", R.id.key_j to "খ", R.id.key_k to "থ",
         R.id.key_l to "ধ", R.id.key_z to "ৌ", R.id.key_x to "ৈ",
-        R.id.key_c to "আ", R.id.key_v to "ভ", R.id.key_b to "ণ",
+        R.id.key_c to "ৈ", R.id.key_v to "ভ", R.id.key_b to "ণ",
         R.id.key_n to "ঙ", R.id.key_m to "শ"
     )
 
@@ -211,6 +223,9 @@ class KeyboardView @JvmOverloads constructor(
 
     fun updateCandidates(candidates: List<String>) {
         candidateView?.renderSimple(candidates)
+        // Auto hide settings icon when candidates are shown
+        findViewById<View>(R.id.btn_open_settings)?.visibility = 
+            if (candidates.isEmpty()) View.VISIBLE else View.GONE
     }
 
     fun setShifted(shifted: Boolean) {
@@ -228,6 +243,67 @@ class KeyboardView @JvmOverloads constructor(
         updateKeyLabels()
     }
 
+    fun applySettings() {
+        val prefs = context.getSharedPreferences("keyboard_settings", Context.MODE_PRIVATE)
+        
+        // Height Calculation
+        val heightProgress = prefs.getInt("key_height_percent", 50)
+        val heightDp = 40 + (heightProgress * 40 / 100)
+        val heightPx = (heightDp * resources.displayMetrics.density).toInt()
+
+        // Width/Padding Calculation
+        val widthProgress = prefs.getInt("key_width_percent", 0)
+        // Map 0-100 to 0dp-48dp side padding
+        val paddingPx = (widthProgress * 48 / 100 * resources.displayMetrics.density).toInt()
+        
+        this.setPadding(paddingPx, this.paddingTop, paddingPx, this.paddingBottom)
+
+        // Update all buttons height
+        for (button in keyButtons.values) {
+            val params = button.layoutParams
+            params.height = heightPx
+            button.layoutParams = params
+        }
+
+        // Also update special buttons
+        val specialIds = listOf(
+            R.id.key_shift, R.id.key_backspace, R.id.key_symbols,
+            R.id.key_language, R.id.key_comma, R.id.key_space,
+            R.id.key_period, R.id.key_enter
+        )
+        for (id in specialIds) {
+            findViewById<Button>(id)?.let { button ->
+                val params = button.layoutParams
+                params.height = heightPx
+                button.layoutParams = params
+            }
+        }
+    }
+
+    private val longPressMappings = mapOf(
+        R.id.key_q to listOf("1", "[", "«"), R.id.key_w to listOf("2", "]", "»"),
+        R.id.key_e to listOf("3", "{", "€"), R.id.key_r to listOf("4", "}", "£"),
+        R.id.key_t to listOf("5", "#", "৳"), R.id.key_y to listOf("6", "%", "‰"),
+        R.id.key_u to listOf("7", "^", "↑"), R.id.key_i to listOf("8", "*", "∞"),
+        R.id.key_o to listOf("9", "+", "±"), R.id.key_p to listOf("0", "=", "≠"),
+        R.id.key_a to listOf("@", "_", "ø"), R.id.key_s to listOf("$", "#", "ß"),
+        R.id.key_d to listOf("&", "|", "∆"), R.id.key_f to listOf("*", "~", "∫"),
+        R.id.key_g to listOf("(", "<", "≤"), R.id.key_h to listOf(")", ">", "≥"),
+        R.id.key_j to listOf("-", "$", "≈"), R.id.key_k to listOf("+", "€", "µ"),
+        R.id.key_l to listOf(":", "£", "¶"), R.id.key_z to listOf("*", "•", "†"),
+        R.id.key_x to listOf("\"", "¶", "‡"), R.id.key_c to listOf("'", "÷", "©"),
+        R.id.key_v to listOf(":", "×", "®"), R.id.key_b to listOf(";", "{", "™"),
+        R.id.key_n to listOf("?", "}", "¬"), R.id.key_m to listOf("!", "?", "¿"),
+        R.id.key_period to listOf("।", "...", ":")
+    )
+
+    private var popupWindow: android.widget.PopupWindow? = null
+    private var popupContentView: LinearLayout? = null
+    private var selectedPopupChar: String? = null
+    private var isLongPressActive = false
+    private val longPressHandler = Handler(Looper.getMainLooper())
+    private var longPressRunnable: Runnable? = null
+
     private fun setupKeys() {
         android.util.Log.d("KeyboardView", "setupKeys started")
         candidateView = findViewById(R.id.candidate_view)
@@ -240,45 +316,20 @@ class KeyboardView @JvmOverloads constructor(
         for (id in numberIds) {
             findViewById<Button>(id)?.let { button ->
                 keyButtons[id] = button
-                button.setOnClickListener {
-                    dispatchKey(KeyAction.Character(button.text.toString()))
-                }
+                button.setOnTouchListener(createKeyTouchListener(id))
+            }
+        }
+
+        // Letter keys
+        for (id in qwertyKeys.keys) {
+            findViewById<Button>(id)?.let { button ->
+                keyButtons[id] = button
+                button.setOnTouchListener(createKeyTouchListener(id))
             }
         }
 
         findViewById<android.widget.ImageButton>(R.id.key_paste)?.setOnClickListener {
             dispatchKey(KeyAction.Paste)
-        }
-
-        findViewById<android.widget.ImageButton>(R.id.key_emoji)?.setOnClickListener {
-            toggleEmojiMode()
-        }
-
-        findViewById<android.widget.ImageButton>(R.id.btn_emoji_backspace)?.let { button ->
-            button.setOnClickListener {
-                dispatchKey(KeyAction.Backspace)
-            }
-            button.setOnLongClickListener {
-                startBackspaceRepeating()
-                true
-            }
-            button.setOnTouchListener { _, event ->
-                if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
-                    stopBackspaceRepeating()
-                }
-                false
-            }
-        }
-
-        // Letter/Symbol keys
-        for (id in qwertyKeys.keys) {
-            findViewById<Button>(id)?.let { button ->
-                keyButtons[id] = button
-                button.setOnClickListener {
-                    val text = button.text.toString()
-                    dispatchKey(KeyAction.Character(text))
-                }
-            }
         }
 
         // Special keys
@@ -340,12 +391,117 @@ class KeyboardView @JvmOverloads constructor(
             dispatchKey(KeyAction.Paste)
         }
 
+        findViewById<android.widget.ImageButton>(R.id.key_emoji)?.setOnClickListener {
+            toggleEmojiMode()
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.btn_emoji_backspace)?.setOnClickListener {
+            dispatchKey(KeyAction.Backspace)
+        }
+
         updateKeyLabels()
+    }
+
+    private fun createKeyTouchListener(id: Int): OnTouchListener {
+        return OnTouchListener { v, event ->
+            val button = v as Button
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    isLongPressActive = false
+                    selectedPopupChar = null
+                    longPressRunnable = Runnable {
+                        val options = longPressMappings[id] ?: emptyList()
+                        if (options.isNotEmpty()) {
+                            isLongPressActive = true
+                            showKeyPopup(v, options)
+                        }
+                    }
+                    longPressHandler.postDelayed(longPressRunnable!!, 400)
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (isLongPressActive && popupWindow?.isShowing == true) {
+                        updatePopupSelection(v, event.rawX)
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    longPressRunnable?.let { longPressHandler.removeCallbacks(it) }
+                    if (isLongPressActive) {
+                        selectedPopupChar?.let { dispatchKey(KeyAction.Character(it)) }
+                        dismissPopup()
+                    } else if (event.action == MotionEvent.ACTION_UP) {
+                        dispatchKey(KeyAction.Character(button.text.toString()))
+                    }
+                }
+            }
+            true
+        }
+    }
+
+    private fun showKeyPopup(anchor: View, options: List<String>) {
+        popupContentView = LinearLayout(context).apply {
+            orientation = HORIZONTAL
+            background = context.getDrawable(R.drawable.bg_keyboard)
+            setPadding(8, 8, 8, 8)
+            elevation = 8f
+        }
+
+        for (opt in options) {
+            val tv = TextView(context).apply {
+                text = opt
+                textSize = 24f
+                setPadding(24, 16, 24, 16)
+                gravity = android.view.Gravity.CENTER
+                setTextColor(android.graphics.Color.WHITE)
+            }
+            popupContentView?.addView(tv)
+        }
+
+        popupWindow = android.widget.PopupWindow(
+            popupContentView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply {
+            isOutsideTouchable = true
+        }
+
+        val location = IntArray(2)
+        anchor.getLocationOnScreen(location)
+        popupWindow?.showAtLocation(
+            anchor,
+            android.view.Gravity.NO_GRAVITY,
+            location[0],
+            location[1] - 150
+        )
+    }
+
+    private fun updatePopupSelection(anchor: View, rawX: Float) {
+        val container = popupContentView ?: return
+        var found = false
+        for (i in 0 until container.childCount) {
+            val child = container.getChildAt(i) as TextView
+            val loc = IntArray(2)
+            child.getLocationOnScreen(loc)
+            if (rawX >= loc[0] && rawX <= loc[0] + child.width) {
+                child.setBackgroundColor(android.graphics.Color.DKGRAY)
+                selectedPopupChar = child.text.toString()
+                found = true
+            } else {
+                child.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            }
+        }
+        if (!found) selectedPopupChar = null
+    }
+
+    private fun dismissPopup() {
+        popupWindow?.dismiss()
+        popupWindow = null
+        popupContentView = null
+        isLongPressActive = false
     }
 
     private fun updateKeyLabels() {
         val mapping = when {
-            isSymbolsMode -> symbolsKeys
+            isSymbolsMode -> if (isShifted) symbolsKeysPage2 else symbolsKeys
             currentLanguage == LanguageMode.BANGLA_LAYOUT -> {
                 if (isShifted) banglaLayoutShiftedKeys else banglaLayoutKeys
             }
@@ -378,7 +534,9 @@ class KeyboardView @JvmOverloads constructor(
 
         // Update shift key appearance/text
         findViewById<Button>(R.id.key_shift)?.apply {
-            text = if (isSymbolsMode) "1/2" else "⇧"
+            text = if (isSymbolsMode) {
+                if (isShifted) "2/2" else "1/2"
+            } else "⇧"
             alpha = if (isShifted) 1.0f else 0.7f
         }
 

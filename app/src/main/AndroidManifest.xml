@@ -20,6 +20,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Keyboard" />
+
         <service
             android:name=".ime.KeyboardService"
             android:exported="true"

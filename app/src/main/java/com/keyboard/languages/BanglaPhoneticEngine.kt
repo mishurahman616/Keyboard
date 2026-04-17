@@ -27,7 +27,7 @@ class BanglaPhoneticEngine {
         // === Two-letter conjuncts/modifiers ===
         "kh" to "খ", "Kh" to "খ", "KH" to "খ",
         "gh" to "ঘ", "Gh" to "ঘ", "GH" to "ঘ",
-        "ch" to "চ", "Ch" to "চ", "CH" to "চ",
+        "ch" to "ছ", "Ch" to "ছ", "CH" to "ছ",
         "chh" to "ছ", "Chh" to "ছ", "CHH" to "ছ",
         "jh" to "ঝ", "Jh" to "ঝ", "JH" to "ঝ",
         "th" to "থ", "tH" to "থ", "Th" to "ঠ", "TH" to "ঠ",
@@ -102,8 +102,9 @@ class BanglaPhoneticEngine {
      */
     private val yantaraConsonants = setOf(
         "k", "K", "kh", "Kh", "KH", "g", "G", "gh", "Gh", "GH", "c", "C", "ch", "Ch", "CH", "chh", "Chh", "CHH", "j", "J", "jh", "Jh", "JH",
-        "t", "T", "th", "Th", "TH", "d", "D", "dh", "Dh", "DH", "n", "N", "p", "P", "ph", "Ph", "PH", "b", "B", "bh", "Bh", "BH",
-        "m", "M", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H", "ksh", "Ksh", "KSH", "rr", "Rr", "RR", "rh", "Rh", "RH", "R"
+        "t", "T", "th", "Th", "TH", "tH", "d", "D", "dh", "Dh", "DH", "dH", "n", "N", "p", "P", "ph", "Ph", "PH", "b", "B", "bh", "Bh", "BH",
+        "m", "M", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H", "ksh", "Ksh", "KSH", "rr", "Rr", "RR", "rh", "Rh", "RH", "R",
+        "ndh", "NDH", "nth", "NTH", "ngk", "NGK", "ngg", "NGG"
     )
 
     /**
@@ -121,17 +122,17 @@ class BanglaPhoneticEngine {
 
             when {
                 // Handle reph initiation (র্) when 'r' is followed by consonant
-                token == "r" && shouldInitiateReph(next, prev) -> {
+                token.equals("r", ignoreCase = true) && shouldInitiateReph(next, prev) -> {
                     out.append("র্")
                 }
 
                 // Handle yantara (্য) for 'y' after consonant
-                token == "y" && prev?.isConsonantToken() == true && prev in yantaraConsonants -> {
+                token.equals("y", ignoreCase = true) && prev?.isConsonantToken() == true && prev in yantaraConsonants -> {
                     out.append("্য")
                 }
 
                 // Handle antasta ya (য়) - standalone 'y'
-                token == "y" -> {
+                token.equals("y", ignoreCase = true) -> {
                     out.append("য়")
                 }
 
@@ -196,7 +197,8 @@ class BanglaPhoneticEngine {
             "t", "T", "th", "Th", "TH", "tH", "d", "D", "dh", "Dh", "DH", "dH", "n", "N",
             "p", "P", "ph", "Ph", "PH", "b", "B", "bh", "Bh", "BH", "m", "M",
             "y", "Y", "r", "R", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H",
-            "f", "F", "v", "V", "z", "Z", "w", "W", "ksh", "Ksh", "KSH", "x", "X", "q", "Q"
+            "f", "F", "v", "V", "z", "Z", "w", "W", "ksh", "Ksh", "KSH", "x", "X", "q", "Q",
+            "ndh", "NDH", "nth", "NTH", "ngk", "NGK", "ngg", "NGG"
         )
     }
 }

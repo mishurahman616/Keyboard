@@ -41,6 +41,13 @@
             android:layout_marginTop="8dp"
             android:text="2. Select Keyboard" />
 
+        <Button
+            android:id="@+id/btn_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Keyboard Settings" />
+
         <EditText
             android:id="@+id/et_test"
             android:layout_width="match_parent"

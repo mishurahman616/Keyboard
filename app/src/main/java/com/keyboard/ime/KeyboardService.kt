@@ -177,6 +177,13 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
                 handleKeyAction(action)
             }
 
+            // Setup settings button
+            view.findViewById<View>(R.id.btn_open_settings)?.setOnClickListener {
+                val intent = Intent(this, com.keyboard.ui.SettingsActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+
             // Setup candidate click listener
             view.setCandidateClickListener { candidate ->
                 commitCandidate(candidate)
@@ -210,6 +217,7 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
     override fun onWindowShown() {
         super.onWindowShown()
         android.util.Log.d("KeyboardService", "onWindowShown called")
+        keyboardView?.applySettings()
     }
 
     override fun onCreateCandidatesView(): View? {
@@ -454,7 +462,8 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
 
     private fun handleShift() {
         if (isSymbolsMode) {
-            android.util.Log.d("KeyboardService", "Shift in symbols mode - page 2 not implemented")
+            isShifted = !isShifted
+            keyboardView?.setShifted(isShifted)
             return
         }
 
