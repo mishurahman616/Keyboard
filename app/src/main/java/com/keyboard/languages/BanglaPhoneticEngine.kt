@@ -48,8 +48,8 @@ class BanglaPhoneticEngine {
         "ou" to "ঔ", "OU" to "ঔ",
         "au" to "ঔ", "AU" to "ঔ",
         "a" to "আ", "A" to "আ",
-        "i" to "ই", "I" to "ই",
-        "u" to "উ", "U" to "উ",
+        "i" to "ই", "I" to "ঈ",
+        "u" to "উ", "U" to "ঊ",
         "e" to "এ", "E" to "এ",
         "o" to "ও", "O" to "অ",
 
@@ -80,9 +80,9 @@ class BanglaPhoneticEngine {
      */
     private val vowelSigns = mapOf(
         "a" to "া", "A" to "া",
-        "i" to "ি", "I" to "ি",
+        "i" to "ি", "I" to "ী",
         "ii" to "ী", "II" to "ী",
-        "u" to "ু", "U" to "ু",
+        "u" to "ু", "U" to "ূ",
         "uu" to "ূ", "UU" to "ূ",
         "e" to "ে", "E" to "ে",
         "o" to "",     // inherent vowel (breaks conjunct cluster)

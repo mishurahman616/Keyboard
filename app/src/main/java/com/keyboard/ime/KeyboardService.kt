@@ -83,8 +83,8 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
         
         // Load initial dictionaries in background
         lifecycleScope.launch(Dispatchers.IO) {
-            loadDictionary("dictionaries/english_sample.txt", "en")
-            loadDictionary("dictionaries/bangla_sample.txt", "bn")
+            loadDictionary("dictionaries/english_raw.txt", "en")
+            loadDictionary("dictionaries/bangla_raw.txt", "bn")
             
             // Also load learned words from DB
             val learnedWords = db.wordDao().getAll()
@@ -98,11 +98,20 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
         try {
             assets.open(assetPath).bufferedReader().useLines { lines ->
                 lines.forEach { line ->
+                    if (line.isBlank()) return@forEach
                     val parts = line.split(",")
                     if (parts.size >= 2) {
                         val word = parts[0].trim()
                         val freq = parts[1].trim().toIntOrNull() ?: 1
-                        trie.insert(word, freq)
+                        if (word.isNotEmpty()) trie.insert(word, freq)
+                    } else {
+                        // Handle raw word lists (one word per line or tab-separated)
+                        val lineStr = line.trim()
+                        if (lineStr.isNotEmpty()) {
+                            val tabParts = lineStr.split("\t")
+                            val word = if (tabParts.size >= 2) tabParts[1].trim() else tabParts[0].trim()
+                            if (word.isNotEmpty()) trie.insert(word, 100)
+                        }
                     }
                 }
             }
