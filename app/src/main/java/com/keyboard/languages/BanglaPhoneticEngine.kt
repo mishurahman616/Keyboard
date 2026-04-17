@@ -30,8 +30,8 @@ class BanglaPhoneticEngine {
         "ch" to "চ", "Ch" to "চ", "CH" to "চ",
         "chh" to "ছ", "Chh" to "ছ", "CHH" to "ছ",
         "jh" to "ঝ", "Jh" to "ঝ", "JH" to "ঝ",
-        "th" to "ত", "Th" to "ঠ", "TH" to "ত",
-        "dh" to "দ", "Dh" to "ঢ", "DH" to "দ",
+        "th" to "থ", "tH" to "থ", "Th" to "ঠ", "TH" to "ঠ",
+        "dh" to "ধ", "dH" to "ধ", "Dh" to "ঢ", "DH" to "ঢ",
         "ph" to "ফ", "Ph" to "ফ", "PH" to "ফ",
         "bh" to "ভ", "Bh" to "ভ", "BH" to "ভ",
         "sh" to "শ", "Sh" to "শ", "SH" to "শ",
@@ -39,6 +39,10 @@ class BanglaPhoneticEngine {
         "ng" to "ঙ", "Ng" to "ঙ", "NG" to "ঙ",
         "rr" to "ড়", "Rr" to "ড়", "RR" to "ড়",
         "rh" to "ঢ়", "Rh" to "ঢ়", "RH" to "ঢ়",
+        "qq" to "ঁ",
+        "^" to "ঁ",
+        "NG" to "ং",
+        " :" to "ঃ",
 
         // === Vowels (standalone) ===
         "aa" to "আ", "AA" to "আ",
@@ -66,8 +70,10 @@ class BanglaPhoneticEngine {
         "m" to "ম", "M" to "ম",
         "y" to "য়", "Y" to "য়",
         "r" to "র", "R" to "ড়",
+        "x" to "ক্স", "X" to "ক্স",
+        "q" to "ক", "Q" to "ক",
         "l" to "ল", "L" to "ল",
-        "s" to "স", "S" to "ষ",
+        "s" to "স", "S" to "স",
         "h" to "হ", "H" to "হ",
         "f" to "ফ", "F" to "ফ",
         "v" to "ভ", "V" to "ভ",
@@ -187,10 +193,10 @@ class BanglaPhoneticEngine {
         private val CONSONANT_TOKENS = setOf(
             "k", "K", "kh", "Kh", "KH", "g", "G", "gh", "Gh", "GH", "ng", "Ng", "NG",
             "c", "C", "ch", "Ch", "CH", "chh", "Chh", "CHH", "j", "J", "jh", "Jh", "JH",
-            "t", "T", "th", "Th", "TH", "d", "D", "dh", "Dh", "DH", "n", "N",
+            "t", "T", "th", "Th", "TH", "tH", "d", "D", "dh", "Dh", "DH", "dH", "n", "N",
             "p", "P", "ph", "Ph", "PH", "b", "B", "bh", "Bh", "BH", "m", "M",
             "y", "Y", "r", "R", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H",
-            "f", "F", "v", "V", "z", "Z", "w", "W", "ksh", "Ksh", "KSH"
+            "f", "F", "v", "V", "z", "Z", "w", "W", "ksh", "Ksh", "KSH", "x", "X", "q", "Q"
         )
     }
 }

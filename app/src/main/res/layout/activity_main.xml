@@ -96,6 +96,20 @@
                     android:layout_marginTop="8dp"
                     android:text="• 'amar' → আমার\n• 'bangla' → বাংলা\n• 'rohomon' → রহমান\n• 'O' (Shift+o) → অ\n• 'a' or 'A' → আ"
                     android:textStyle="italic" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Special Marks"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:text="^ (Shift+6) = ঁ (Chandrabindu)\nNG (Shift+ng) = ং (Anusvara)\n: = ঃ (Visarga)" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -132,6 +146,135 @@
                     android:layout_marginTop="8dp"
                     android:text="• 'f' → া  |  Shift+'f' → অ\n• 'a' → ু  |  Shift+'a' → ূ\n• 's' → ৃ  |  Shift+'s' → ষ\n• 'v' → র  |  Shift+'v' → ভ"
                     android:textStyle="italic" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Special Marks"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:text="^ (Shift+6) = ঁ (Chandrabindu)\nNG (Shift+ng) = ং (Anusvara)\n: = ঃ (Visarga)" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Phonetic Key Mapping Reference"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vowels &amp; Signs"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:stretchColumns="1">
+
+                    <TableRow>
+                        <TextView android:text="a, A" android:textStyle="bold" android:paddingRight="16dp"/>
+                        <TextView android:text="আ (া)" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:text="i" android:textStyle="bold" />
+                        <TextView android:text="ই (ি)" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:text="I (Shift+i)" android:textStyle="bold" />
+                        <TextView android:text="ঈ (ী)" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:text="u" android:textStyle="bold" />
+                        <TextView android:text="উ (ু)" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:text="U (Shift+u)" android:textStyle="bold" />
+                        <TextView android:text="ঊ (ূ)" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:text="e, E" android:textStyle="bold" />
+                        <TextView android:text="এ (ে)" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:text="o" android:textStyle="bold" />
+                        <TextView android:text="ও" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:text="O (Shift+o)" android:textStyle="bold" />
+                        <TextView android:text="অ (ো)" />
+                    </TableRow>
+                </TableLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Consonants (Common)"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:text="k=ক, g=গ, c/ch=চ, j=জ, t=ত, T=ট, d=দ, D=ড, n=ন, N=ণ, p=প, b=ব, m=ম, r=র, l=ল, s=স, sh=শ, ss=ষ, h=হ" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Special Consonants"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:text="kh=খ, gh=ঘ, chh=ছ, jh=ঝ, th=ত, Th=ঠ, dh=দ, Dh=ঢ, ph/f=ফ, bh/v=ভ, y=য়, w=ওয়, ng=ঙ, ksh=ক্ষ" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Special Marks"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:text="^ (Shift+6) = ঁ (Chandrabindu)\nNG (Shift+ng) = ং (Anusvara)\n: = ঃ (Visarga)" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -188,6 +331,20 @@
                     android:layout_height="wrap_content"
                     android:text="• 'r' + consonant → Reph (র্)\n  e.g., 'rka' → রকা (or র্ক if followed by vowel)\n• consonant + 'y' → Jafala (্য)\n  e.g., 'ky' → ক্য\n• 'ksh' → ক্ষ"
                     android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Special Marks"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:text="^ (Shift+6) = ঁ (Chandrabindu)\nNG (Shift+ng) = ং (Anusvara)\n: = ঃ (Visarga)" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -230,6 +387,20 @@
                     android:layout_marginTop="8dp"
                     android:text="Example for 'প্র' (p+r):\n1. Press 'r' (প)\n2. Press 'g' (্)\n3. Press 'v' (র)"
                     android:textStyle="italic" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Special Marks"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:text="^ (Shift+6) = ঁ (Chandrabindu)\nNG (Shift+ng) = ং (Anusvara)\n: = ঃ (Visarga)" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

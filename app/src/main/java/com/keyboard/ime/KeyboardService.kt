@@ -83,34 +83,74 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
         
         // Load initial dictionaries in background
         lifecycleScope.launch(Dispatchers.IO) {
+            // Priority 1: Common English Stop Words (Highest Priority)
+            loadCommonWords()
+
+            // Priority 2: Raw word lists (Standard Priority)
             loadDictionary("dictionaries/english_raw.txt", "en")
             loadDictionary("dictionaries/bangla_raw.txt", "bn")
             
-            // Also load learned words from DB
+            // Priority 3: Learned words from DB
             val learnedWords = db.wordDao().getAll()
-            learnedWords.forEach { trie.insert(it.word, it.frequency) }
+            learnedWords.forEach { trie.insert(it.word, it.frequency + 200) }
             
             android.util.Log.d("KeyboardService", "Dictionary loading complete")
         }
     }
 
+    private fun loadCommonWords() {
+        val commonEn = listOf(
+            "the", "be", "to", "of", "and", "a", "in", "that", "have", "I",
+            "it", "for", "not", "on", "with", "he", "as", "you", "do", "at",
+            "this", "but", "his", "by", "from", "they", "we", "say", "her", "she",
+            "or", "an", "will", "my", "one", "all", "would", "there", "their", "what",
+            "so", "up", "out", "if", "about", "who", "get", "which", "go", "me"
+        )
+        commonEn.forEach { trie.insert(it, 1000) }
+
+        val commonBn = listOf(
+            "আমি", "তুমি", "সে", "আমরা", "আপনার", "এই", "কি", "করে", "হয়", "না",
+            "জীবন", "মানুষ", "দেশ", "কাজ", "ভাল", "মা", "বাবা", "ভাই", "বোন", "বন্ধু"
+        )
+        commonBn.forEach { trie.insert(it, 1000) }
+    }
+
     private fun loadDictionary(assetPath: String, lang: String) {
+        val isEnglish = lang == "en"
+        // English filter: Only alphabetic words, at least 2 chars, or 'a'/'I'
+        val englishWordRegex = Regex("^[a-zA-Z]{2,}|^[aAIi]$")
+
         try {
             assets.open(assetPath).bufferedReader().useLines { lines ->
                 lines.forEach { line ->
                     if (line.isBlank()) return@forEach
                     val parts = line.split(",")
+                    
+                    var word: String? = null
+                    var freq = 100 // Default frequency for raw list
+
                     if (parts.size >= 2) {
-                        val word = parts[0].trim()
-                        val freq = parts[1].trim().toIntOrNull() ?: 1
-                        if (word.isNotEmpty()) trie.insert(word, freq)
+                        word = parts[0].trim()
+                        freq = parts[1].trim().toIntOrNull() ?: 100
                     } else {
-                        // Handle raw word lists (one word per line or tab-separated)
                         val lineStr = line.trim()
                         if (lineStr.isNotEmpty()) {
                             val tabParts = lineStr.split("\t")
-                            val word = if (tabParts.size >= 2) tabParts[1].trim() else tabParts[0].trim()
-                            if (word.isNotEmpty()) trie.insert(word, 100)
+                            word = if (tabParts.size >= 2) tabParts[1].trim() else tabParts[0].trim()
+                        }
+                    }
+
+                    if (word != null && word.isNotEmpty()) {
+                        if (isEnglish) {
+                            // Apply English sanity filter
+                            if (word.matches(englishWordRegex)) {
+                                trie.insert(word, freq)
+                            }
+                        } else {
+                            // For Bangla, just ensure it's not numbers/symbols (basic check)
+                            if (!word.any { it.isDigit() }) {
+                                trie.insert(word, freq)
+                            }
                         }
                     }
                 }
@@ -284,8 +324,8 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
             keyboardView?.updateCandidates(emptyList())
         }
 
-        // Reset shift after typing (single-shift mode like mobile keyboards)
-        if (isShifted && languageMode == LanguageMode.ENGLISH) {
+        // Reset shift after typing if not in Caps Lock
+        if (isShifted && !isCapsLock) {
             isShifted = false
             keyboardView?.setShifted(false)
         }
@@ -409,14 +449,33 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
         }
     }
 
+    private var isCapsLock = false
+    private var lastShiftClickTime = 0L
+
     private fun handleShift() {
         if (isSymbolsMode) {
-            // TODO: Implement second symbols page
             android.util.Log.d("KeyboardService", "Shift in symbols mode - page 2 not implemented")
-        } else {
-            isShifted = !isShifted
-            keyboardView?.setShifted(isShifted)
+            return
         }
+
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastShiftClickTime < 300) {
+            // Double click: Toggle Caps Lock
+            isCapsLock = !isCapsLock
+            isShifted = isCapsLock
+            lastShiftClickTime = 0 // Reset
+        } else {
+            // Single click: Toggle Shift
+            if (isCapsLock) {
+                isCapsLock = false
+                isShifted = false
+            } else {
+                isShifted = !isShifted
+            }
+            lastShiftClickTime = currentTime
+        }
+
+        keyboardView?.setShifted(isShifted)
     }
 
     private fun handleLanguageSwitch() {
