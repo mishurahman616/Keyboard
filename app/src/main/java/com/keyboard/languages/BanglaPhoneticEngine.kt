@@ -23,6 +23,7 @@ class BanglaPhoneticEngine {
         "ngg" to "ঙ্গ", "NGG" to "ঙ্গ",
         "ndh" to "ন্ধ", "NDH" to "ন্ধ",
         "nth" to "ন্থ", "NTH" to "ন্থ",
+        "rri" to "ঋ", "Rri" to "ঋ",
 
         // === Two-letter conjuncts/modifiers ===
         "kh" to "খ", "Kh" to "খ", "KH" to "খ",
@@ -37,7 +38,6 @@ class BanglaPhoneticEngine {
         "sh" to "শ", "Sh" to "শ", "SH" to "শ",
         "ss" to "ষ", "Ss" to "ষ", "SS" to "ষ",
         "ng" to "ঙ", "Ng" to "ঙ", "NG" to "ঙ",
-        "rr" to "ড়", "Rr" to "ড়", "RR" to "ড়",
         "rh" to "ঢ়", "Rh" to "ঢ়", "RH" to "ঢ়",
         "qq" to "ঁ",
         "^" to "ঁ",
@@ -55,7 +55,7 @@ class BanglaPhoneticEngine {
         "i" to "ই", "I" to "ঈ",
         "u" to "উ", "U" to "ঊ",
         "e" to "এ", "E" to "এ",
-        "o" to "ও", "O" to "অ",
+        "o" to "অ", "O" to "ও",
 
         // === Consonants (single) ===
         "k" to "ক", "K" to "ক",
@@ -73,7 +73,7 @@ class BanglaPhoneticEngine {
         "x" to "ক্স", "X" to "ক্স",
         "q" to "ক", "Q" to "ক",
         "l" to "ল", "L" to "ল",
-        "s" to "স", "S" to "স",
+        "s" to "স", "S" to "ষ",
         "h" to "হ", "H" to "হ",
         "f" to "ফ", "F" to "ফ",
         "v" to "ভ", "V" to "ভ",
@@ -94,7 +94,8 @@ class BanglaPhoneticEngine {
         "o" to "",     // inherent vowel (breaks conjunct cluster)
         "O" to "ো",    // o-kar
         "oi" to "ৈ", "OI" to "ৈ",
-        "ou" to "ৌ", "OU" to "ৌ"
+        "ou" to "ৌ", "OU" to "ৌ",
+        "rri" to "ৃ"
     )
 
     /**
@@ -103,7 +104,7 @@ class BanglaPhoneticEngine {
     private val yantaraConsonants = setOf(
         "k", "K", "kh", "Kh", "KH", "g", "G", "gh", "Gh", "GH", "c", "C", "ch", "Ch", "CH", "chh", "Chh", "CHH", "j", "J", "jh", "Jh", "JH",
         "t", "T", "th", "Th", "TH", "tH", "d", "D", "dh", "Dh", "DH", "dH", "n", "N", "p", "P", "ph", "Ph", "PH", "b", "B", "bh", "Bh", "BH",
-        "m", "M", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H", "ksh", "Ksh", "KSH", "rr", "Rr", "RR", "rh", "Rh", "RH", "R",
+        "m", "M", "l", "L", "s", "S", "sh", "Sh", "SH", "ss", "Ss", "SS", "h", "H", "ksh", "Ksh", "KSH", "rh", "Rh", "RH", "R",
         "ndh", "NDH", "nth", "NTH", "ngk", "NGK", "ngg", "NGG"
     )
 
@@ -118,14 +119,8 @@ class BanglaPhoneticEngine {
 
         for ((index, token) in tokens.withIndex()) {
             val prev = tokens.getOrNull(index - 1)
-            val next = tokens.getOrNull(index + 1)
 
             when {
-                // Handle reph initiation (র্) when 'r' is followed by consonant
-                token.equals("r", ignoreCase = true) && shouldInitiateReph(next, prev) -> {
-                    out.append("র্")
-                }
-
                 // Handle yantara (্য) for 'y' after consonant
                 token.equals("y", ignoreCase = true) && prev?.isConsonantToken() == true && prev in yantaraConsonants -> {
                     out.append("্য")
@@ -153,11 +148,6 @@ class BanglaPhoneticEngine {
         }
 
         return out.toString()
-    }
-
-    private fun shouldInitiateReph(next: String?, prev: String?): Boolean {
-        if (next?.isConsonantToken() != true) return false
-        return prev == null || !prev.isConsonantToken()
     }
 
     private fun parseTokens(raw: String): List<String> {
