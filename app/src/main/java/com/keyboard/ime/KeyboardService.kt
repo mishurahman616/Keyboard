@@ -326,7 +326,11 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
             }
             requestSuggestions()
         } else {
-            ic.commitText(translated, 1)
+            if (languageMode == LanguageMode.BANGLA_PHONETIC) {
+                applyTransliterationDiff(ic, translated)
+            } else {
+                ic.commitText(translated, 1)
+            }
             handleWordBreak()
             resetInputState()
             keyboardView?.updateCandidates(emptyList())
@@ -532,8 +536,8 @@ class KeyboardService : InputMethodService(), LifecycleOwner {
             ic.deleteSurroundingText(deleteCount, 0)
         }
 
-        // Commit the selected candidate
-        ic.commitText(candidate, 1)
+        // Commit the selected candidate and add a space
+        ic.commitText("$candidate ", 1)
 
         // Learn the word
         lifecycleScope.launch {
